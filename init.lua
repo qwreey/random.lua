@@ -54,15 +54,22 @@ local WORD = {
 	"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
 	"1","2","3","4","5","6","7","8","9","0","_","."
 };
+local WORDNoupper = {
+	"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
+	"1","2","3","4","5","6","7","8","9","0","_","."
+};
 local lWord = #WORD;
+local lWordNoupper = #WORDNoupper;
 
 ---Making base64 id that have 18 length, you can set length with argument
 ---@param length number|nil option, length of id string
 ---@return string id generated base64 id
-function module.makeId(length)
+function module.makeId(length,noUppercase)
+	local tWORD = noUppercase and WORDNoupper or WORD;
+	local len = noUppercase and lWordNoupper or lWord;
 	local ID = {};
 	for _ = 1,length or 18 do
-		insert(ID,WORD[random(1,lWord)]);
+		insert(ID,tWORD[random(1,len)]);
 	end
 	return concat(ID);
 end;
