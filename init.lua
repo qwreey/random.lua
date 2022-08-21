@@ -6,11 +6,11 @@ local getrusage = uv.getrusage;
 local last = 0;
 local index = 0;
 local xor = bit.bxor;
-local time = os.time;
 local mathrandom = math.random;
 local randomseed = math.randomseed;
 local concat = table.concat;
 local insert = table.insert;
+local floor = math.floor;
 
 ---Make seed from device status
 ---@param min number|nil option, it will be used for making seek (not seek max/min, it will be used for just bit operations)
@@ -21,7 +21,14 @@ function module.makeSeed(min,max)
 	max = max or 0;
 	index = index + 1;
 	local status = getrusage();
-	local this = xor(time(),clock(),collectgarbage("count")*100000000,status.maxrss,status.majflt,status.utime.usec,index,last,min*111,max*111);
+	local this = xor(
+		floor(clock()%collectgarbage("count")%os.clock()%1*1000000000),
+		-- clock(),
+		-- floor(collectgarbage("count")%os.clock()),
+		status.maxrss,status.majflt,
+		status.utime.usec,index,
+		min,max,last
+	);
 	last = this;
 	return this;
 end
