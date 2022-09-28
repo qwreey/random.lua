@@ -44,7 +44,26 @@ function module.random(min,max,ignore,seed)
 	randomseed(seed or makeSeed(min,max));
 	if ignore then
 		local this = mathrandom(min,max - #ignore);
+		local lastv;
+		local thiscopy = this;
 		for _,v in ipairs(ignore) do
+			if lastv and lastv > v then
+				-- when list is not sorted
+				local sorted = {};
+				for _,vv in ipairs(ignore) do
+					table.insert(sorted,vv);
+				end
+				table.sort(sorted);
+				-- logger("List not sorted")
+				-- logger(sorted)
+				for _,vv in ipairs(sorted) do
+					if thiscopy >= vv then
+						thiscopy = thiscopy + 1;
+					end
+				end
+				return thiscopy;
+			end
+			lastv = v;
 			if this >= v then
 				this = this + 1;
 			end
